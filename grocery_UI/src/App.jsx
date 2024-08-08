@@ -272,7 +272,7 @@ function App() {
                   showImportant={showImportant}
                 />
               ))}
-              {notesToShow.length > 0 && (
+              {notesToShow && notesToShow.length > 0 && (
                 <StdButton text="Cear All" className="w-36" onClick={deleteAllNotes} />
               )}
             </>
