@@ -147,14 +147,16 @@ function App() {
   }
 
   const deleteNote = async (id) => {
-    try {
-      noteService.setToken(user)
-      await noteService.deleteNote(id)
-      setUsersNotes(usersNotes.filter(note => note.id !== id))
-
-    }catch(err) {
-      console.log('error: ', err)
-    }
+    // if(window.confirm('Sure?')) {
+      try {
+        noteService.setToken(user)
+        await noteService.deleteNote(id)
+        setUsersNotes(usersNotes.filter(note => note.id !== id))
+  
+      }catch(err) {
+        console.log('error: ', err)
+      }
+    // }
   }
 
   const deleteAllNotes = async () => {
