@@ -26,10 +26,13 @@ function App() {
   const [showImportant, setShowImportant] = useState(true)
   const [showAll, setShowAll] = useState(true)
 
-  const notesToShow = usersNotes
-    .filter(note => (
-      showAll ? note : note.important === true
-    ))
+  let notesToShow
+  if(usersNotes) {
+    notesToShow = usersNotes
+      .filter(note => (
+        showAll ? note : note.important === true
+      ))
+  }
 
   const ref = useRef()
 
@@ -260,7 +263,7 @@ function App() {
             />
 
             < >
-              {notesToShow.map(note => (
+              {notesToShow && notesToShow.map(note => (
                 <Note 
                   key={note.id}
                   note={note}
