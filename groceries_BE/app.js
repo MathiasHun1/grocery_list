@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const { URI } = require('./utils/config')
 const cors = require('cors')
 const { tokenExtractor, userExtractor, errorHandler, requestLogger } = require('./utils/middleware')
+require('dotenv').config()
 
 console.log('Connecting MongoDB..')
 mongoose.connect(URI)
@@ -16,7 +17,9 @@ mongoose.connect(URI)
 
 app.use(cors())
 app.use(express.json())
-app.use(requestLogger)
+if(process.env.NODE_ENV !== 'production') {
+  app.use(requestLogger)
+}
 app.use(tokenExtractor)
 app.use(userExtractor)
 app.use('/api/users', usersRouter)

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router,Routes, Route, Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import StdButton from './components/StdButton'
 import InputField from './components/InputField'
 import loginService from './services/loginService'
@@ -30,7 +30,8 @@ function App() {
     .filter(note => (
       showAll ? note : note.important === true
     ))
-  
+
+  const ref = useRef()
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem('loggedInUser')
@@ -135,6 +136,9 @@ function App() {
     e.preventDefault()
 
     try {
+      if(content === '') {
+        return ref.current.toggleVis()
+      }
       noteService.setToken(user)
       const result = await noteService.addNote({ content, important })
       setUsersNotes(usersNotes.concat(result))
@@ -160,14 +164,16 @@ function App() {
   }
 
   const deleteAllNotes = async () => {
-    try {
-      for(let note of usersNotes) {
-        noteService.setToken(user)
-        await noteService.deleteNote(note.id)
+    if(window.confirm("Are You Sure?")) {
+      try {
+        for(let note of usersNotes) {
+          noteService.setToken(user)
+          await noteService.deleteNote(note.id)
+        }
+        setUsersNotes([])
+      } catch (error) {
+        console.log('error: ', error)
       }
-      setUsersNotes([])
-    } catch (error) {
-      console.log('error: ', error)
     }
   }
 
@@ -188,52 +194,61 @@ function App() {
 
   return (
     <Router>
-      <div className='w-screen min-h-screen flex flex-col items-center relative'>
+      <div className='w-full max-w-4xl min-h-screen bg-black flex flex-col items-center relative mx-auto'>
 
         {!user && (
-          <Routes>
-            <Route path='/' element={<Navbar />}/>
+          <>
+            <h1 className=" mt-4 mb-4 text-4xl text-lime-400 font-bold font-sans italic drop-shadow-[0_3px_15px_rgba(100,255,200,1)]">
+              NOTE APP
+            </h1>
 
-          <Route path='/login' element={<LoginForm
-            user={user}
-            login={login}
-            logout={logout}
-            username={username}
-            password={password}
-            handleUsernameChange={handleUsernameChange}
-            handlePassChange={handlePassChange}
-            clearFields={clearFields}
-            />}
-          />
 
-          <Route path='/sign-up' element={<SignupForm
-            user={user}
-            signup={signup}
-            name={name}
-            username={username}
-            password={password}
-            confirmPass={confirmPass}
-            handleNameChange={handleNameChange}
-            handleUsernameChange={handleUsernameChange}
-            handlePassChange={handlePassChange}
-            handleConfirmPassChange={handleConfirmPassChange}
-            clearFields={clearFields}
-            />}
-          />
-          
-          </Routes>
+            <Routes>
+              <Route path='/' element={<Navbar />}/>
+
+            <Route path='/login' element={<LoginForm
+              user={user}
+              login={login}
+              logout={logout}
+              username={username}
+              password={password}
+              handleUsernameChange={handleUsernameChange}
+              handlePassChange={handlePassChange}
+              clearFields={clearFields}
+              />}
+            />
+
+            <Route path='/sign-up' element={<SignupForm
+              user={user}
+              signup={signup}
+              name={name}
+              username={username}
+              password={password}
+              confirmPass={confirmPass}
+              handleNameChange={handleNameChange}
+              handleUsernameChange={handleUsernameChange}
+              handlePassChange={handlePassChange}
+              handleConfirmPassChange={handleConfirmPassChange}
+              clearFields={clearFields}
+              />}
+            />
+            
+            </Routes>
+          </>
         )}
 
         <Message errorMsg={errorMsg} successMsg={successMsg} />
 
         {user && (
           <>
-            <div className='absolute top-2 left-2'>
-              <p className='text-black'>{user.username}</p>
+            <div className='absolute top-2 left-2 gap-2 h-10'>
               <Link to='/'>
-                < StdButton text="sign out" onClick={logout}/>
+                < StdButton text="sign out" onClick={logout} className='p-1 px-2'/>
               </Link>
             </div>
+              <p className='text-green-400 font-bold text-center'>
+                {user.username}
+              </p>
 
             <NoteForm 
               content={content}
@@ -241,9 +256,10 @@ function App() {
               handleContentChange={handleContentChange}
               handleImportantChange={handleImportantChange}
               addNote={addNote}
+              ref={ref}
             />
 
-            <div>
+            < >
               {notesToShow.map(note => (
                 <Note 
                   key={note.id}
@@ -253,13 +269,16 @@ function App() {
                   showImportant={showImportant}
                 />
               ))}
-            </div>
+              {notesToShow.length > 0 && (
+                <StdButton text="Cear All" className="w-36" onClick={deleteAllNotes} />
+              )}
+            </>
 
             <StdButton 
-                text={`${showAll ? "show important" : "show all"}`}
+                text={`${showAll ? "All notes" : "Importants"}`}
                 onClick={() => setShowAll(!showAll)}
 
-                className=" p-1 px-2 text-center absolute top-16 left-2" 
+                className=" p-1 px-2 text-center absolute top-2 right-2" 
             />
           </>
 

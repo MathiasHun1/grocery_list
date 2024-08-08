@@ -9,9 +9,9 @@ const LoginForm = ({user, login, username, handleUsernameChange, password, handl
       {!user && (
         <form 
         onSubmit={login} 
-        className="px-8 py-4 bg-emerald-600 w-fit h-fit flex flex-col gap-2">
+        className="px-8 py-4 w-fit h-fit flex flex-col gap-2 text-white bg-black">
 
-          <InputField type="text" text="User" placeholder="repabela21" onChange={handleUsernameChange} value={username}/>
+          <InputField type="text" text="Username" placeholder="repabela21" onChange={handleUsernameChange} value={username}/>
 
           <InputField type="password" text="Password" placeholder="password123" onChange={handlePassChange} value={password}/>
 

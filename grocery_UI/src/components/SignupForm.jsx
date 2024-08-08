@@ -7,7 +7,7 @@ const SignupForm = ({ signup, name, username, password, confirmPass, handleNameC
   return (
     <form 
       onSubmit={signup} 
-      className="px-8 py-4 bg-emerald-600 w-fit flex flex-col gap-2 shadow-lg">
+      className="px-8 py-4 w-fit flex flex-col gap-2 shadow-lg bg-black text-white">
 
       <InputField type="text" text="Full Name" placeholder="Kovács Jakab" onChange={handleNameChange} value={name}/>
 
